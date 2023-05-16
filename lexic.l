@@ -2,7 +2,12 @@
 #include <stdio.h>
 #include "parser.tab.h"
 %}
-:
+identifier [_a-zA-Z][_a-zA-Z0-9]*
+float [0-9]+\.[0-9]*([eE][+-]?[0-9]+)?
+int [0-9]+ 
+char "'"[^\n']"'" 
+comentBig "/*"([^*]|\n|\*[^/])*"*/" 
+coment  "//"(.)*  
 %%
 [ \t\n]                      /* Ignorar espacios en blanco */
 "if"                        { return IF; }
@@ -33,12 +38,13 @@
 ">="                        { return GE; }
 "=="                        { return EQ; }
 "!="                        { return NE; }
-[_a-zA-Z][_a-zA-Z0-9]*      { yylval.strval = strdup(yytext); return IDENTIFIER; }
-[0-9]+\.[0-9]*([eE][+-]?[0-9]+)? { yylval.floatval = atof(yytext); return FLOAT_LITERAL; }
-[0-9]+                      { yylval.intval = atoi(yytext); return INT_LITERAL; }
-"'"[^\n']"'"                { yylval.charval = yytext[1]; return CHAR_LITERAL; }
-"/*"([^*]|\n|\*[^/])*"*/"   /* Ignorar comentarios */
-"//"(.)*                    /* Ignorar comentarios de una sola línea */
+{identifier}                { yylval.strval = strdup(yytext); return IDENTIFIER; }
+{float}                     { yylval.floatval = atof(yytext); return FLOAT_VALUE; }
+{int}                       { yylval.intval = atoi(yytext); return INT_VALUR; }
+{char}                      { yylval.charval = yytext[1]; return CHAR_VALUE; }
+{comentBig}                 {/* Ignorar comentarios */}
+{coment}                    {/* Ignorar comentarios de una sola línea */}
 .                           { fprintf(stderr, "Error léxico: Carácter desconocido '%c'\n", yytext[0]); }
 %%
 
+int yywrap(){return 1;}
