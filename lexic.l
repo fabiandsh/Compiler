@@ -3,10 +3,10 @@
 #include "parser.tab.h"
 %}
 identifier [_a-zA-Z][_a-zA-Z0-9]*
-float [0-9]+\.[0-9]*([eE][+-]?[0-9]+)?
+float [0-9]+\.[0-9]*
 int [0-9]+ 
 char "'"[^\n']"'" 
-comentBig "/*"([^*]|\n|\*[^/])*"*/" 
+comentBig "/\*"(.|\n)*"*/" 
 coment  "//"(.)*  
 %%
 [ \t\n]                      /* Ignorar espacios en blanco */
